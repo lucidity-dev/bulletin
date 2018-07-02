@@ -1,0 +1,12 @@
+syntax = "proto3";
+package main;
+
+message Message {
+	enum Commands {
+	     HELP = 0;
+	     REGISTER = 1;
+	     GET = 2;
+	}
+	Commands cmd = 1;
+	string args = 2;
+}
