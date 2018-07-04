@@ -43,7 +43,7 @@ func main() {
 
 		switch body.Cmd {
 		case pb.Message_HELP:
-			sock.Send([]byte("hello"))
+			sock.Send([]byte("hello")
 		case pb.Message_REGISTER:
 			sock.Send([]byte("registering"))
 		case pb.Message_GET:

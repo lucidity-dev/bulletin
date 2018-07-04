@@ -10,3 +10,8 @@ message Message {
 	Commands cmd = 1;
 	string args = 2;
 }
+
+message Topic {
+	string name = 1;
+	string url = 2;
+}
