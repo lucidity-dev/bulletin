@@ -48,6 +48,7 @@ func main() {
 		case pb.Message_HELP:
 			sock.Send([]byte("hello"))
 		case pb.Message_REGISTER:
+			fmt.Println("registering")
 			if _, hit := mc.Get(string(body.Args)); hit != nil {
 				mc.Set(&memcache.Item{Key: string(body.Args), Value: []byte("url")})
 				//TODO: autogenerate URL with random socket
@@ -74,7 +75,30 @@ func main() {
 				sock.Send(res)
 			}
 		case pb.Message_GET:
-			sock.Send([]byte("getting"))
+			fmt.Println("getting")
+			if item, hit := mc.Get(string(body.Args)); hit == nil {
+				result := &pb.Topic{
+					Name: string(body.Args),
+					Url: string(item.Value),
+					Err: "",
+				}
+				var res []byte
+				res, err = proto.Marshal(result)
+				if err != nil {
+					sock.Send([]byte("getting failed: data marshalling error"))
+				}
+				sock.Send(res)
+			} else {
+				result := &pb.Topic{
+					Name: "",
+					Url: "",
+					Err: "ERROR: Topic not registered",
+				}
+				var res []byte
+				res, err = proto.Marshal(result)
+
+				sock.Send(res)
+			}
 		default:
 			sock.Send([]byte("INVALID REQUEST"))
 		}

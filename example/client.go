@@ -63,6 +63,33 @@ func main() {
 	} else {
 		fmt.Println(body.Err)
 	}
-	
+
+	request = &pb.Message{
+		Cmd: pb.Message_GET,
+		Args: "test",
+	}
+
+	data, err = proto.Marshal(request)
+
+	if err != nil {
+		die("error creating protobuf: %s", err)
+	}
+
+	if err = sock.Send(data); err != nil {
+		die("error sending message: %s", err)
+	}
+
+	if msg, err = sock.Recv(); err != nil {
+		die("didn't receive any data: %s", err)
+	}
+
+	proto.Unmarshal(msg, &body)
+
+	if body.Err == "" {
+		fmt.Printf("Topic: %s -> URL: %s", string(body.Name), string(body.Url))
+	} else {
+		fmt.Println(body.Err)
+	}
+
 	sock.Close()
 }
