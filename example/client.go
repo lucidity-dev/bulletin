@@ -37,8 +37,8 @@ func main() {
 	}
 
 	request := &pb.Message{
-		Cmd: pb.Message_GET,
-		Args: "test args",
+		Cmd: pb.Message_REGISTER,
+		Args: "test",
 	}
 
 	data, err = proto.Marshal(request)
@@ -54,7 +54,15 @@ func main() {
 	if msg, err = sock.Recv(); err != nil {
 		die("didn't receive any data: %s", err)
 	}
+	//fmt.Println(string(msg))
+	var body pb.Topic
+	proto.Unmarshal(msg, &body)
 
-	fmt.Println(string(msg))
+	if body.Err == "" {
+		fmt.Printf("Topic: %s -> URL: %s", string(body.Name), string(body.Url))
+	} else {
+		fmt.Println(body.Err)
+	}
+	
 	sock.Close()
 }

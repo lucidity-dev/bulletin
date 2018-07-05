@@ -3,13 +3,15 @@ package main
 import (
 	"fmt"
 	"os"
+
+	"github.com/bradfitz/gomemcache/memcache"
 	
+	"github.com/golang/protobuf/proto"
+	pb "github.com/apache8080/bulletin/protobuf"
+
 	"nanomsg.org/go-mangos/protocol/rep"
 	"nanomsg.org/go-mangos/transport/ipc"
 	"nanomsg.org/go-mangos/transport/tcp"
-
-	"github.com/golang/protobuf/proto"
-	pb "github.com/apache8080/bulletin/protobuf"
 )
 
 func die(format string, v ...interface{}) {
@@ -18,8 +20,9 @@ func die(format string, v ...interface{}) {
 }
 
 func main() {
+	mc := memcache.New("127.0.0.1:8000")
 	url := "tcp://127.0.0.1:40899"
-	
+
 	sock, err := rep.NewSocket();
 	if err != nil {
 		die("can't start up server: %s", err)
@@ -43,14 +46,38 @@ func main() {
 
 		switch body.Cmd {
 		case pb.Message_HELP:
-			sock.Send([]byte("hello")
+			sock.Send([]byte("hello"))
 		case pb.Message_REGISTER:
-			sock.Send([]byte("registering"))
+			if _, hit := mc.Get(string(body.Args)); hit != nil {
+				mc.Set(&memcache.Item{Key: string(body.Args), Value: []byte("url")})
+				//TODO: autogenerate URL with random socket
+				result := &pb.Topic{
+					Name: string(body.Args),
+					Url: "url",
+					Err: "",
+				}
+				var res []byte
+				res, err = proto.Marshal(result)
+				if err != nil {
+					sock.Send([]byte("registering failed: data marshalling error"))
+				}
+				sock.Send(res)
+			} else {
+				result := &pb.Topic{
+					Name: "",
+					Url: "",
+					Err: "ERROR: Topic already registered",
+				}
+				var res []byte
+				res, err = proto.Marshal(result)
+
+				sock.Send(res)
+			}
 		case pb.Message_GET:
 			sock.Send([]byte("getting"))
 		default:
 			sock.Send([]byte("INVALID REQUEST"))
 		}
-		fmt.Println(body.Args)
+		//fmt.Println(body.Args)
 	}
 }
