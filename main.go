@@ -3,7 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
-
+	"math/rand"
+	
 	"github.com/bradfitz/gomemcache/memcache"
 	
 	"github.com/golang/protobuf/proto"
@@ -17,6 +18,19 @@ import (
 func die(format string, v ...interface{}) {
 	fmt.Fprintln(os.Stderr, fmt.Sprintf(format, v...))
 	os.Exit(1)
+}
+
+func getUrl(mc *memcache.Client) string {
+	port := rand.Intn(59999) + 1
+	_, miss := mc.Get(string(port))
+
+	for miss == nil {
+		port = rand.Intn(59999) + 1
+		_, miss = mc.Get(string(port))
+	}
+	mc.Set(&memcache.Item{Key: string(port), Value: []byte("test")})
+
+	return fmt.Sprintf("tcp://127.0.0.1:%d", port)
 }
 
 func main() {
@@ -50,11 +64,13 @@ func main() {
 		case pb.Message_REGISTER:
 			fmt.Println("registering")
 			if _, hit := mc.Get(string(body.Args)); hit != nil {
-				mc.Set(&memcache.Item{Key: string(body.Args), Value: []byte("url")})
+				link := getUrl(mc)
+				mc.Set(&memcache.Item{Key: string(body.Args), Value: []byte(link)})
 				//TODO: autogenerate URL with random socket
+
 				result := &pb.Topic{
 					Name: string(body.Args),
-					Url: "url",
+					Url: link,
 					Err: "",
 				}
 				var res []byte

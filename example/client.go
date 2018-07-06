@@ -38,7 +38,7 @@ func main() {
 
 	request := &pb.Message{
 		Cmd: pb.Message_REGISTER,
-		Args: "test",
+		Args: "test1",
 	}
 
 	data, err = proto.Marshal(request)
@@ -66,7 +66,7 @@ func main() {
 
 	request = &pb.Message{
 		Cmd: pb.Message_GET,
-		Args: "test",
+		Args: "test1",
 	}
 
 	data, err = proto.Marshal(request)
