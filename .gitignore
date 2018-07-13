@@ -13,3 +13,5 @@
 
 bulletin
 example/example
+example/pubsub/pub/pub
+example/pubsub/sub/sub
