@@ -29,7 +29,7 @@ go build .
 ```
 
 ### Pub/Sub Registration and Getting topic
-This example registers a publisher that begins publishing on the auto generated URL, and then a subscriber gets the URL from the server and begins subscribing.
+This example registers a publisher that begins publishing on the auto generated URL, and then a subscriber gets the URL from the server and begins subscribing.  
 Building and Running the publisher (assumes the server is already running):
 ```
 cd bulletin/examples/pubsub/pub
