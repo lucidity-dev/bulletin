@@ -20,7 +20,7 @@ In a seperate shell run memcached: `memcached -p 8000`
 
 ## Examples
 ### Registering and Getting a topic
-This example registers a topic with the server and then makes a GET request for the topics URL.
+This example registers a topic with the server and then makes a GET request for the topics URL.  
 Building and Running (assumes the server is already running):
 ```
 cd bulletin/examples/simple
