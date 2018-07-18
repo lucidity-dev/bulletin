@@ -12,6 +12,6 @@
 *.out
 
 bulletin
-example/example
-example/pubsub/pub/pub
-example/pubsub/sub/sub
+examples/simple/simple
+examples/pubsub/pub/pub
+examples/pubsub/sub/sub
