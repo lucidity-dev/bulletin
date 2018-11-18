@@ -6,13 +6,13 @@ import (
 	"time"
 
 	"nanomsg.org/go-mangos"
-	"nanomsg.org/go-mangos/protocol/sub"
 	"nanomsg.org/go-mangos/protocol/req"
+	"nanomsg.org/go-mangos/protocol/sub"
 	"nanomsg.org/go-mangos/transport/ipc"
 	"nanomsg.org/go-mangos/transport/tcp"
 
 	"github.com/golang/protobuf/proto"
-	pb "github.com/apache8080/bulletin/protobuf"
+	pb "github.com/lucidity-dev/bulletin/protobuf"
 )
 
 func die(format string, v ...interface{}) {
@@ -30,7 +30,7 @@ func main() {
 	var server mangos.Socket
 	var data []byte
 	var msg []byte
-	
+
 	server, err = req.NewSocket()
 	if err != nil {
 		die("error creating socket: %s", err.Error())
@@ -43,7 +43,7 @@ func main() {
 	}
 
 	request := &pb.Message{
-		Cmd: pb.Message_GET,
+		Cmd:  pb.Message_GET,
 		Args: "test1",
 	}
 
@@ -65,7 +65,7 @@ func main() {
 	proto.Unmarshal(msg, &body)
 
 	var sock mangos.Socket
-	
+
 	if sock, err = sub.NewSocket(); err != nil {
 		die("can't get new sub socket: %s", err.Error())
 	}

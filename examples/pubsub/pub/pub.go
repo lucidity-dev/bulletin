@@ -12,7 +12,7 @@ import (
 	"nanomsg.org/go-mangos/transport/tcp"
 
 	"github.com/golang/protobuf/proto"
-	pb "github.com/apache8080/bulletin/protobuf"
+	pb "github.com/lucidity-dev/bulletin/protobuf"
 )
 
 func die(format string, v ...interface{}) {
@@ -30,7 +30,7 @@ func main() {
 	var server mangos.Socket
 	var data []byte
 	var msg []byte
-	
+
 	server, err = req.NewSocket()
 	if err != nil {
 		die("error creating socket: %s", err.Error())
@@ -43,7 +43,7 @@ func main() {
 	}
 
 	request := &pb.Message{
-		Cmd: pb.Message_REGISTER,
+		Cmd:  pb.Message_REGISTER,
 		Args: "test1",
 	}
 
@@ -63,7 +63,7 @@ func main() {
 
 	var body pb.Topic
 	proto.Unmarshal(msg, &body)
-	
+
 	var sock mangos.Socket
 
 	if sock, err = pub.NewSocket(); err != nil {

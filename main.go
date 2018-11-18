@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"math/rand"
-	
+	"os"
+
 	"github.com/bradfitz/gomemcache/memcache"
-	
+
 	"github.com/golang/protobuf/proto"
-	pb "github.com/apache8080/bulletin/protobuf"
+	pb "github.com/lucidity-dev/bulletin/protobuf"
 
 	"nanomsg.org/go-mangos/protocol/rep"
 	"nanomsg.org/go-mangos/transport/ipc"
@@ -37,7 +37,7 @@ func main() {
 	mc := memcache.New("127.0.0.1:8000")
 	url := "tcp://127.0.0.1:40899"
 
-	sock, err := rep.NewSocket();
+	sock, err := rep.NewSocket()
 	if err != nil {
 		die("can't start up server: %s", err)
 	}
@@ -51,11 +51,11 @@ func main() {
 	for {
 		msg, err := sock.Recv()
 		var body pb.Message
-		
-		if (err != nil) {
+
+		if err != nil {
 			die("bad request: %s", err)
 		}
-		
+
 		proto.Unmarshal(msg, &body)
 
 		switch body.Cmd {
@@ -70,8 +70,8 @@ func main() {
 
 				result := &pb.Topic{
 					Name: string(body.Args),
-					Url: link,
-					Err: "",
+					Url:  link,
+					Err:  "",
 				}
 				var res []byte
 				res, err = proto.Marshal(result)
@@ -82,8 +82,8 @@ func main() {
 			} else {
 				result := &pb.Topic{
 					Name: "",
-					Url: "",
-					Err: "ERROR: Topic already registered",
+					Url:  "",
+					Err:  "ERROR: Topic already registered",
 				}
 				var res []byte
 				res, err = proto.Marshal(result)
@@ -95,8 +95,8 @@ func main() {
 			if item, hit := mc.Get(string(body.Args)); hit == nil {
 				result := &pb.Topic{
 					Name: string(body.Args),
-					Url: string(item.Value),
-					Err: "",
+					Url:  string(item.Value),
+					Err:  "",
 				}
 				var res []byte
 				res, err = proto.Marshal(result)
@@ -107,8 +107,8 @@ func main() {
 			} else {
 				result := &pb.Topic{
 					Name: "",
-					Url: "",
-					Err: "ERROR: Topic not registered",
+					Url:  "",
+					Err:  "ERROR: Topic not registered",
 				}
 				var res []byte
 				res, err = proto.Marshal(result)
