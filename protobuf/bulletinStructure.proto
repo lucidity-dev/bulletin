@@ -6,6 +6,7 @@ message Message {
 	     HELP = 0;
 	     REGISTER = 1;
 	     GET = 2;
+		 FLUSH_ALL = 3;
 	}
 	Commands cmd = 1;
 	string args = 2;
