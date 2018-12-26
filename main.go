@@ -34,7 +34,9 @@ func getUrl(mc *memcache.Client) string {
 }
 
 func main() {
-	mc := memcache.New("127.0.0.1:8000")
+	fmt.Println("Waiting for memcached connection")
+	mc := memcache.New("127.0.0.1:11211")
+	fmt.Println("Connected to memcached")
 	url := "tcp://127.0.0.1:40899"
 
 	sock, err := rep.NewSocket()
