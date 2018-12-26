@@ -117,6 +117,13 @@ func main() {
 
 				sock.Send(res)
 			}
+		case pb.Message_FLUSH_ALL:
+			fmt.Println("flushing all")
+			err = mc.FlushAll()
+			if err != nil {
+				die("memecached error: %v", err)
+			}
+			sock.Send([]byte("FLUSHED ENTIRE CACHE"))
 		default:
 			sock.Send([]byte("INVALID REQUEST"))
 		}
