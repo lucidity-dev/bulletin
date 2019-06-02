@@ -10,7 +10,7 @@ import (
 	"nanomsg.org/go-mangos/transport/tcp"
 
 	"github.com/golang/protobuf/proto"
-	pb "github.com/apache8080/bulletin/protobuf"
+	pb "github.com/lucidity-dev/bulletin/protobuf"
 )
 
 func die(format string, v ...interface{}) {
